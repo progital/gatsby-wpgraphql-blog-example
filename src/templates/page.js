@@ -6,12 +6,16 @@ import CategoriesWidget from "../components/CategoriesWidget"
 import RecentCommentsWidget from "../components/RecentCommentsWidget"
 import RecentPostsWidget from "../components/RecentPostsWidget"
 import Seo from "../components/Seo"
+import contentParser from "gatsby-wpgraphql-inline-images"
 
 const Page = props => {
   const {
     location,
     data: {
       wpgraphql: { page },
+    },
+    pageContext: {
+      pluginOptions: { wordPressUrl, uploadsUrl },
     },
   } = props
   const { title, content } = page
@@ -24,7 +28,9 @@ const Page = props => {
           <Divider />
           <Row type="flex" justify="space-around" gutter={24}>
             <Col xs={24}>
-              <div dangerouslySetInnerHTML={{ __html: content }} />
+              <div>
+                {contentParser({ content }, { wordPressUrl, uploadsUrl })}
+              </div>
             </Col>
           </Row>
         </Col>

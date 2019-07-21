@@ -1,10 +1,10 @@
 const path = require(`path`)
-module.exports = async ({ actions, graphql }) => {
+module.exports = async ({ actions, graphql }, pluginOptions) => {
   const GET_PAGES = `
   query GET_PAGES($first:Int $after:String){
     wpgraphql {
       pages(
-        first: $first 
+        first: $first
         after: $after
         where: {
           parent: null
@@ -53,7 +53,10 @@ module.exports = async ({ actions, graphql }) => {
       createPage({
         path: `/${page.uri}`,
         component: pageTemplate,
-        context: page,
+        context: {
+          pluginOptions,
+          ...page,
+        },
       })
     })
   })

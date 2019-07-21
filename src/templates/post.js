@@ -7,6 +7,7 @@ import RecentCommentsWidget from "../components/RecentCommentsWidget"
 import RecentPostsWidget from "../components/RecentPostsWidget"
 import PostEntryMeta from "../components/PostEntryMeta"
 import Seo from "../components/Seo"
+import contentParser from "gatsby-wpgraphql-inline-images"
 
 const renderTermNodes = (nodes, title) => (
   <div>
@@ -22,7 +23,7 @@ const renderTerms = (categoryNodes = [], tagNodes = []) => (
   <Fragment>
     <Divider />
     {categoryNodes ? renderTermNodes(categoryNodes, `Categories: `) : null}
-    {tagNodes && tagNodes.length ? renderTermNodes(tagNodes, `Tags: `) : null }
+    {tagNodes && tagNodes.length ? renderTermNodes(tagNodes, `Tags: `) : null}
   </Fragment>
 )
 
@@ -31,6 +32,9 @@ const Post = props => {
     location,
     data: {
       wpgraphql: { post },
+    },
+    pageContext: {
+      pluginOptions: { wordPressUrl, uploadsUrl },
     },
   } = props
   const { title, content } = post
@@ -46,7 +50,9 @@ const Post = props => {
               <PostEntryMeta post={post} />
             </Col>
             <Col xs={24} md={18}>
-              <div dangerouslySetInnerHTML={{ __html: content }} />
+              <div>
+                {contentParser({ content }, { wordPressUrl, uploadsUrl })}
+              </div>
               {post.categories.nodes.length || post.tags.nodes.length
                 ? renderTerms(post.categories.nodes, post.tags.nodes)
                 : null}

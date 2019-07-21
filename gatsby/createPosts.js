@@ -1,10 +1,10 @@
 const path = require(`path`)
-module.exports = async ({ actions, graphql }) => {
+module.exports = async ({ actions, graphql }, pluginOptions) => {
   const GET_POSTS = `
   query GET_POSTS($first:Int $after:String){
     wpgraphql {
       posts(
-        first: $first 
+        first: $first
         after:$after
       ) {
         pageInfo {
@@ -73,7 +73,10 @@ module.exports = async ({ actions, graphql }) => {
       createPage({
         path: `/blog/${post.uri}/`,
         component: postTemplate,
-        context: post,
+        context: {
+          pluginOptions,
+          ...post,
+        },
       })
     })
   })
